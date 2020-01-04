@@ -11,6 +11,8 @@ const moment = require('moment');
 const helmet = require('helmet')
 // HTTP request logger - https://github.com/expressjs/morgan
 const morgan = require('morgan')
+// Allows cross-origin resource sharing - https://www.npmjs.com/package/cors
+const cors = require('cors')
 
 // =====================================
 // Initial Setup =======================
@@ -27,12 +29,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // Tells the app to use files in the Client's 'build' folder when rendering static pages (production pages).
 app.use(express.static(path.join(__dirname, 'client/build')));
-// Logs all HTTP actions to the console (Only runs in 'development').
-// if (process.env.NODE_ENV === 'development') {
-  app.use(morgan(':method :url {HTTP Status: :status} {Content Length: :res[content-length]} {Response Time: :response-time ms}'))
-// }
+// Logs all HTTP actions to the console (Does not run during testing operations to prevent console spamming).
+if (process.env.NODE_ENV === 'testing') {
+  app.use(morgan(`:method :url {:status} {:response-time ms} {:date[clf]} {:res[content-length]}`))
+}
 // Increase App API security by setting Headers using Helemt.
 app.use(helmet())
+//
+app.use(cors())
 
 // =====================================
 // Router Setup ========================
@@ -42,16 +46,13 @@ app.use(helmet())
 
 // ------------------------------------
 // Test Route
-// ROUTE: GET `/api/test/`
-app.get('/api/test', async (req, res, next) => {
-  // Basic Object to return to ensure connection is functional.
-  const helloWorld = [ {id: 1, message: 'Hello World!'}, {id: 2, message: 'Connection is functional.'} ]
-
+// ROUTE: GET `/api/auth/test`
+app.get('/api/auth/test', async (req, res, next) => {
   // Return HTTP status and JSON results object.
   return res.status(200).json({
     success: true,
-    message: 'API returned test successfully',
-    results: helloWorld
+    message: 'API returned Test Route successfully',
+    results: ['Just','A','Simple','Test.']
   });
 });
 
@@ -70,49 +71,6 @@ for (var k in interfaces) {
     }
   }
 };
-
-// =====================================
-// Error Handling ======================
-// =====================================
-// Gets called because of `errorWrapper.js` in the controllers directory.
-// End all function for all errors.
-app.use(function(err, req, res, next) {
-  // Example of specific error handling. Currently unused.
-    // if (error instanceof ReferenceError) {}
-  if (process.env.NODE_ENV === 'production') {
-    res.status(500)
-  } else {
-    if (!err.name) {
-      res.status(500).json({
-        success: false,
-        name: 'Blank Error',
-        message: 'If this error is displayed, then you likely used `next()` without specifiying anything.'
-      });
-    } else {
-      // Check for test ENV. If true then output only JSON.
-      if (process.env.NODE_ENV === 'test') {
-        res.status(500).json({
-          success: false,
-          name: err.name,
-          message: err.message
-        });
-      } else {
-        console.log('=================================');
-        console.log('========= ERROR RESULTS =========');
-        console.log('---------------------------------');
-        console.log(err.name);
-        console.log(err.message);
-        console.log('=================================');
-        // console.log(err.stack);
-        res.status(500).json({
-          success: false,
-          name: err.name,
-          message: err.message
-        });
-      };
-    };
-  };
-});
 
 // =====================================
 // Final Steps =========================
