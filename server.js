@@ -1,20 +1,15 @@
 // =====================================
 // Base Imports ========================
 // =====================================
-// Allows use of backend routing.
-// https://expressjs.com/
+// Allows use of backend routing - https://expressjs.com/
 const express = require('express');
-// Path allows our Server to find build files stored in our frontend.
-// https://nodejs.org/api/path.html
+// Path allows our Server to find build files stored in our frontend - https://nodejs.org/api/path.html
 const path = require('path');
-// Date & Time Parser / Manipulator / Validator.
-// https://momentjs.com/
+// Date & Time Parser / Manipulator / Validator - https://momentjs.com/
 const moment = require('moment');
-// Helmet helps you secure your Express apps by setting various HTTP headers.
-// https://helmetjs.github.io/
+// Helmet helps you secure your Express apps by setting various HTTP headers - https://helmetjs.github.io/
 const helmet = require('helmet')
-// HTTP request logger
-// https://github.com/expressjs/morgan
+// HTTP request logger - https://github.com/expressjs/morgan
 const morgan = require('morgan')
 
 // =====================================
@@ -43,7 +38,6 @@ app.use(helmet())
 // Router Setup ========================
 // =====================================
 // The app will use the required files below to generate API routes that allows the frontend to use HTTP calls (Axios) to retrieve data from the predetermined end points.
-  // NOTE: Partners, Events, ect. are not listed in this section on purpose. See usersController.js for more details.
 // app.use('/api/users', require('./controllers/usersController.js'));
 
 // ------------------------------------
@@ -128,7 +122,7 @@ console.log('===============================')
 console.log('API successfully loaded.')
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`)
 console.log('Test functionality with POSTman using the following route:')
-console.log(`      ${addresses[0]}:5000/api/test`)
+console.log(`      ${addresses[0]}:${port}/api/test`)
 console.log(`Listening on port: ${port}`)
 console.log('===============================')
 
