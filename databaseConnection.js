@@ -9,9 +9,9 @@ let config;
 if (process.env.NODE_ENV === 'production') {
   // Forces PG to use SSL connections, allowing data transfer over hosts.
   pg.defaults.ssl = true;
-  config = { connectionString: process.env.RTD_DATABASE_URL };
+  config = { connectionString: process.env.PORTFOLIO_DATABASE_URL };
 } else {
-  config = { connectionString: "postgresql://localhost/rtd_dev" };
+  config = { connectionString: "postgresql://localhost/portfolio_development" };
 };
 
 console.log(config)

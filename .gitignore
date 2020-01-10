@@ -9,9 +9,9 @@ package-lock.json
 .env
 
 # SSH Keys & Local Secrets
-blaineAndersonDevPortfolioServer
-blaineAndersonDevPortfolioServer.pub
-blaineAndersonDevPortfolioServerSecrets
+Blaine-Anderson-Dev-Portfolio-Server-Secrets
+Blaine-Anderson-Dev-Portfolio-Server-Secrets.pub
+Blaine-Anderson-Dev-Portfolio-Server-Secrets
 
 # Other
 .DS_Store

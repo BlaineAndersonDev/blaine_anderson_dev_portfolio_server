@@ -39,6 +39,14 @@ app.use(helmet())
 app.use(cors())
 
 // =====================================
+// Database Setup ======================
+// =====================================
+// Activates the `databaseCreation` file which creates the db, migrations, and seeds.
+const databaseCreation = require('./databaseCreation.js');
+// Activates the `databaseConnection` file which creates a consistant pool for our routers to connect to.
+const databaseConnection = require('./databaseConnection.js');
+
+// =====================================
 // Router Setup ========================
 // =====================================
 // The app will use the required files below to generate API routes that allows the frontend to use HTTP calls (Axios) to retrieve data from the predetermined end points.
