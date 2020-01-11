@@ -22,13 +22,13 @@ if (process.env.NODE_ENV === 'production') {
 console.log(config)
 const pool = new Pool(config);
 
-
 pool.on('connect', () => {
   console.log(`>>> Connected to: ${config.connectionString}`);
 });
 
 // ===============================================================
 //                ---=== Create Local Database ===---
+// node databaseCreation createLocalDb
 exports.createLocalDb = () => {
   pgtools.createdb(config, 'test-db', function (err, res) {
     if (err) {
@@ -41,6 +41,7 @@ exports.createLocalDb = () => {
 
 // ===============================================================
 //                ---=== Drop Local Database ===---
+// node databaseCreation dropLocalDb
 exports.dropLocalDb = () => {
   pgtools.dropdb(config, 'test-db', function (err, res) {
     if (err) {
@@ -53,6 +54,7 @@ exports.dropLocalDb = () => {
 
 // ===============================================================
 //                  ---=== Create Tables ===---
+// node databaseCreation createTableItems
 exports.createTableItems = () => {
   const queryText =
     `CREATE TABLE IF NOT EXISTS
