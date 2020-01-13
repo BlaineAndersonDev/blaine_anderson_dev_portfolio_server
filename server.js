@@ -50,12 +50,14 @@ const databaseConnection = require('./databaseConnection.js');
 // Router Setup ========================
 // =====================================
 // The app will use the required files below to generate API routes that allows the frontend to use HTTP calls (Axios) to retrieve data from the predetermined end points.
-// app.use('/api/users', require('./controllers/usersController.js'));
+app.use('/api/items', require('./controllers/itemsController.js'));
+// const itemsController = require('./controllers/itemsController.js');
+// app.use('/api/items', itemsController.itemRouter)
 
 // ------------------------------------
 // Test Route
-// ROUTE: GET `/api/auth/test`
-app.get('/api/auth/test', async (req, res, next) => {
+// ROUTE: GET `/api/test`
+app.get('/api/test', async (req, res, next) => {
   // Return HTTP status and JSON results object.
   return res.status(200).json({
     success: true,

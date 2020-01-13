@@ -4,13 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "scripts": {
-      "start": "NODE_ENV=production node server.js",
-      "cloudstart": "pm2 kill && pm2 start npm -- start && pm2 monit",
-      "dev": "NODE_ENV=development nodemon server.js",
-      "devreset": "dropdb rtd_dev && createdb rtd_dev && knex migrate:latest && knex seed:run && NODE_ENV=development nodemon server.js",
-      "mocha": "NODE_ENV=test mocha --exit"
-    }
+    "start": "NODE_ENV=production node server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
+    "cloudstart": "pm2 kill && pm2 start npm -- start && pm2 monit",
+    "devreset": "dropdb rtd_dev && createdb rtd_dev && knex migrate:latest && knex seed:run && NODE_ENV=development nodemon server.js",
+    "mocha": "NODE_ENV=test mocha --exit"
   },
   "keywords": [],
   "author": "",
@@ -25,8 +23,7 @@
     "morgan": "^1.9.1",
     "node": "^13.1.0",
     "path": "^0.12.7",
-    "pg": "^7.17.0",
-    "pgtools": "^0.3.0"
+    "pg": "^7.17.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"
