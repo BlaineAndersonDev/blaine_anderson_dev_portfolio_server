@@ -41,8 +41,6 @@ app.use(cors())
 // =====================================
 // Database Setup ======================
 // =====================================
-// Activates the `databaseCreation` file which creates the db, migrations, and seeds.
-const databaseCreation = require('./databaseCreation.js');
 // Activates the `databaseConnection` file which creates a consistant pool for our routers to connect to.
 const databaseConnection = require('./databaseConnection.js');
 

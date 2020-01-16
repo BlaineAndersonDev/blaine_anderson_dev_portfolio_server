@@ -2,10 +2,12 @@
 // This file is run from the terminal to migrate, seed, or destroy
 // the given database.
 //
-// It can be run using the commands:
+// It can be run manually using these commands, but is setup with node scripts.
 //      node databaseSetup generate
+//      node databaseSetup seed
 //      node databaseSetup destroy
 //      NODE_ENV=production node databaseSetup generate
+//      NODE_ENV=production node databaseSetup seed
 //      NODE_ENV=production node databaseSetup destroy
 // ===============================================================
 // Allows the use of Pool provided from PG (allows multiple connections).
@@ -41,7 +43,7 @@ pool.on('connect', () => {
 // -----------------------=== Generate ===------------------------
 // ===============================================================
   exports.generate = () => {
-    console.log('>>> Generating migrations & seeds...')
+    console.log('>>> Generating migrations...')
     const queryText = (`
     CREATE TABLE IF NOT EXISTS items (
       id                      BIGSERIAL NOT NULL PRIMARY KEY,
@@ -61,7 +63,24 @@ pool.on('connect', () => {
       created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+    `);
+    pool.query(queryText)
+      .then((res) => {
+        console.log('>>> Generation Successful!')
+        pool.end();
+      })
+      .catch((err) => {
+        console.log(err);
+        pool.end();
+      });
+  };
 
+// ===============================================================
+// -------------------------=== Seed ===--------------------------
+// ===============================================================
+  exports.seed = () => {
+    console.log('>>> Seeding...')
+    const queryText = (`
     INSERT INTO items (
       name, image, type, value
     ) VALUES (
@@ -86,7 +105,7 @@ pool.on('connect', () => {
     `);
     pool.query(queryText)
       .then((res) => {
-        console.log('>>> Generation Successful!')
+        console.log('>>> Seed Successful!')
         pool.end();
       })
       .catch((err) => {

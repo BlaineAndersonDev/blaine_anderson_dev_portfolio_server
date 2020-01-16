@@ -5,9 +5,19 @@
   "main": "server.js",
   "scripts": {
     "start": "NODE_ENV=production node server.js",
-    "dev": "NODE_ENV=development nodemon server.js",
+
+    "devstart": "NODE_ENV=development nodemon server.js",
+    "devmigrate": "NODE_ENV=development node databaseSetup generate",
+    "devseed": "NODE_ENV=development node databaseSetup seed",
+    "devdestroy": "NODE_ENV=development node databaseSetup destroy",
+    "devboot": "NODE_ENV=development node databaseSetup destroy && NODE_ENV=development node databaseSetup generate && NODE_ENV=development node databaseSetup seed && NODE_ENV=development nodemon server.js",
+
     "cloudstart": "pm2 kill && pm2 start npm -- start && pm2 monit",
-    "devreset": "dropdb rtd_dev && createdb rtd_dev && knex migrate:latest && knex seed:run && NODE_ENV=development nodemon server.js",
+    "cloudmigrate": "NODE_ENV=production node databaseSetup generate",
+    "cloudseed": "NODE_ENV=production node databaseSetup seed",
+    "clouddestroy": "NODE_ENV=production node databaseSetup destroy",
+    "cloudboot": "pm2 kill && NODE_ENV=production node databaseSetup destroy && NODE_ENV=production node databaseSetup generate && NODE_ENV=production node databaseSetup seed && pm2 start npm -- start && pm2 monit",
+
     "mocha": "NODE_ENV=test mocha --exit"
   },
   "keywords": [],
