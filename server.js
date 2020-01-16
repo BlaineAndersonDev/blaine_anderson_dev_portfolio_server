@@ -49,6 +49,7 @@ const databaseConnection = require('./databaseConnection.js');
 // =====================================
 // The app will use the required files below to generate API routes that allows the frontend to use HTTP calls (Axios) to retrieve data from the predetermined end points.
 app.use('/api/items', require('./controllers/itemsController.js'));
+app.use('/api/champions', require('./controllers/championsController.js'));
 // const itemsController = require('./controllers/itemsController.js');
 // app.use('/api/items', itemsController.itemRouter)
 

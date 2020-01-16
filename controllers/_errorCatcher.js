@@ -22,14 +22,6 @@ function paramsContains(params) {
   }
 };
 
-function userExists(userObject) {
-  if (!userObject || userObject === undefined || userObject === null || userObject === '') {
-    return false // If user DOES NOT exist, return false.
-  } else {
-    return true // If user DOES exist, return true.
-  }
-};
-
 function eventIntegerCheck(eventAnswer) {
   if (eventAnswer < 0 || eventAnswer > 5) {
     return false // If eventAnswer is BELOW the minimum value of 0 OR ABOVE the maximum value of 5, return false.
@@ -38,4 +30,4 @@ function eventIntegerCheck(eventAnswer) {
   }
 };
 
-module.exports = {undefinedNullEmptyCheck, bodyContains, paramsContains, userExists, eventIntegerCheck};
+module.exports = {undefinedNullEmptyCheck, bodyContains, paramsContains, eventIntegerCheck};

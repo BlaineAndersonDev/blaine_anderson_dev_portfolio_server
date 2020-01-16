@@ -46,7 +46,7 @@ pool.on('connect', () => {
     console.log('>>> Generating migrations...')
     const queryText = (`
     CREATE TABLE IF NOT EXISTS items (
-      id                      BIGSERIAL NOT NULL PRIMARY KEY,
+      item_id                      BIGSERIAL NOT NULL PRIMARY KEY,
       name                    VARCHAR(128) NOT NULL,
       image                   VARCHAR(128) NOT NULL,
       type                    VARCHAR(128) NOT NULL,
@@ -55,7 +55,7 @@ pool.on('connect', () => {
       updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
     CREATE TABLE IF NOT EXISTS champions (
-      id                      BIGSERIAL NOT NULL PRIMARY KEY,
+      champion_id                      BIGSERIAL NOT NULL PRIMARY KEY,
       name                    VARCHAR(128) NOT NULL,
       image                   VARCHAR(128) NOT NULL,
       class                   VARCHAR(128) NOT NULL,

@@ -1,7 +1,7 @@
 // Implements Express
 const express = require('express');
-// Implements an Express Router called 'itemRouter'
-const itemRouter = express.Router();
+// Implements an Express Router called 'championRouter'
+const championRouter = express.Router();
 // Timestamp generator using the servers local time.
 const moment = require('moment');
 // Imports all custom _errorCatcher functions.
@@ -10,22 +10,21 @@ const errorCatcher = require('./_errorCatcher.js');
 const db = require('../databaseConnection.js');
 
 // ======================================
-// Get all Items.
-// ROUTE: GET `api/items/`
-itemRouter.get('/', (async (req, res, next) => {
+// Get all Champions.
+// ROUTE: GET `api/champions/`
+championRouter.get('/', (async (req, res, next) => {
   // PG database query.
   db.query('\
       SELECT * \
-      FROM items'
+      FROM champions'
     )
     .then(function (results) {
-      console.log(results.rows)
-      // Return Status 500 & Message if 'item' does not exist:
-      if (!errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Items do not exist.` }); };
+      // Return Status 500 & Message if 'champion' does not exist:
+      if (!errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Champions do not exist.` }); };
 
-      // Return 200 Status, Message & Resulting item as a JSON object.
+      // Return 200 Status, Message & Resulting champion as a JSON object.
       return res.status(200).json({
-        message: `API returned Items with item_id of ${req.params.item_id}.`,
+        message: `API returned all Champions.`,
         results: results.rows
       });
     })
@@ -39,46 +38,46 @@ itemRouter.get('/', (async (req, res, next) => {
 }));
 
 // ======================================
-// Get individual Items.
-// ROUTE: GET `api/items/`
-itemRouter.get('/:item_id', (async (req, res, next) => {
+// Get individual Champions.
+// ROUTE: GET `api/champions/`
+championRouter.get('/:champion_id', (async (req, res, next) => {
   // Return Status 400 & Message if 'params' do not contain the following:
-  if (!errorCatcher.paramsContains(req.params.item_id)) { return res.status(400).json({ message: "Params must contain item_id." }); };
+  if (!errorCatcher.paramsContains(req.params.champion_id)) { return res.status(400).json({ message: "Params must contain champion_id." }); };
 
   // PG database query.
-  db.query('\
+  await db.query('\
       SELECT * \
-      FROM items \
-      WHERE items.item_id = $1 ',
+      FROM champions \
+      WHERE champions.champion_id = $1 ;',
       [
-        req.params.item_id
+        req.params.champion_id
       ]
     )
-    .then(function (results) {
-      // Return Status 500 & Message if 'item' does not exist:
-      if (!errorCatcher.itemExists(results.rows[0])) { return res.status(500).json({ message: `Items with provided item_id: ${req.params.item_id} does not exist.` }); };
+  .then(function (results) {
+    // Return Status 500 & Message if 'champion' does not exist:
+    if (!errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Champions with provided champion_id: ${req.params.champion_id} does not exist.` }); };
 
-      // Return 200 Status, Message & Resulting item as a JSON object.
-      return res.status(200).json({
-        message: `API returned Items with item_id of ${req.params.item_id}.`,
-        results: results.rows[0]
-      });
-    })
-    .catch(function (err) {
-      // Return 500 Status & Message.
-      return res.status(500).json({
-        // message: err.stack
-        message: 'There was an error. Please report this to the API Developer.'
-      });
+    // Return 200 Status, Message & Resulting champion as a JSON object.
+    return res.status(200).json({
+      message: `API returned Champions with champion_id of ${req.params.champion_id}.`,
+      results: results.rows
     });
+  })
+  .catch(function (err) {
+    // Return 500 Status & Message.
+    return res.status(500).json({
+      // message: err.stack
+      message: 'There was an error. Please report this to the API Developer.'
+    });
+  });
 }));
 
 // ======================================
-// Create individual Items.
-// ROUTE: POST `api/items/`
-itemRouter.post('/', (async(req, res, next) => {
+// Create individual Champions.
+// ROUTE: POST `api/champions/`
+championRouter.post('/', (async(req, res, next) => {
   // Return Status 400 & Message if 'body' does not contain the following:
-  // if (!errorCatcher.bodyContains(req.body.item_id)) { return res.status(400).json({ message: "Body must contain item_id." }); };
+  // if (!errorCatcher.bodyContains(req.body.champion_id)) { return res.status(400).json({ message: "Body must contain champion_id." }); };
   // if (!errorCatcher.bodyContains(req.body.gender)) { return res.status(400).json({ message: "Body must contain gender." }); };
   // if (!errorCatcher.bodyContains(req.body.birthdate)) { return res.status(400).json({ message: "Body must contain birthdate." }); };
   // if (!errorCatcher.bodyContains(req.body.name)) { return res.status(400).json({ message: "Body must contain name." }); };
@@ -101,19 +100,19 @@ itemRouter.post('/', (async(req, res, next) => {
   // PG database query.
   // await db.query('\
   //     SELECT * \
-  //     FROM items \
-  //     WHERE items.item_id = $1 ',
+  //     FROM champions \
+  //     WHERE champions.champion_id = $1 ',
   //     [
-  //       req.body.item_id
+  //       req.body.champion_id
   //     ]
   //   )
   //   .then(async function (results) {
-  //     // Return Status 500 & Message if 'item_id' already exists.
-  //     if (errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Items with provided item_id ${req.body.item_id} already exists.` }); };
+  //     // Return Status 500 & Message if 'champion_id' already exists.
+  //     if (errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Champions with provided champion_id ${req.body.champion_id} already exists.` }); };
 
       // PG database query.
       await db.query(' \
-        INSERT INTO items \
+        INSERT INTO champions \
         (name, image, category, value, created_date, modified_date) \
         VALUES ($1, $2, $3, $4, $5, $6) \
         RETURNING *',
@@ -122,9 +121,9 @@ itemRouter.post('/', (async(req, res, next) => {
         ]
       )
       .then(function (results) {
-        // Return 200 Status, Message & Resulting item as a JSON object.
+        // Return 200 Status, Message & Resulting champion as a JSON object.
         return res.status(200).json({
-          message: `API returned newly created Items with item_id of ${results.rows[0].item_id}.`,
+          message: `API returned newly created Champions with champion_id of ${results.rows[0].champion_id}.`,
           results: results.rows[0]
         });
       })
@@ -144,11 +143,11 @@ itemRouter.post('/', (async(req, res, next) => {
 }));
 
 // ======================================
-// Updates individual Items.
-// ROUTE: PUT `api/items/:item_id`
-itemRouter.put('/:item_id', (async (req, res, next) => {
+// Updates individual Champions.
+// ROUTE: PUT `api/champions/:champion_id`
+championRouter.put('/:champion_id', (async (req, res, next) => {
   // Return Status 400 & Message if 'params' do not contain the following:
-  if (!errorCatcher.paramsContains(req.params.item_id)) { return res.status(400).json({ message: "Params must contain item_id." }); };
+  if (!errorCatcher.paramsContains(req.params.champion_id)) { return res.status(400).json({ message: "Params must contain champion_id." }); };
   // Return Status 400 & Message if 'body' does not contain the following:
   if (!errorCatcher.bodyContains(req.body.gender)) { return res.status(400).json({ message: "Body must contain gender." }); };
   if (!errorCatcher.bodyContains(req.body.birthdate)) { return res.status(400).json({ message: "Body must contain birthdate." }); };
@@ -171,7 +170,7 @@ itemRouter.put('/:item_id', (async (req, res, next) => {
 
   // PG database query.
   db.query(' \
-    UPDATE items \
+    UPDATE champions \
     SET \
       gender = $2, \
       birthdate = $3, \
@@ -192,16 +191,16 @@ itemRouter.put('/:item_id', (async (req, res, next) => {
       profile_answer_11 = $18, \
       profile_answer_12 = $19, \
       updated_at = $20 \
-    WHERE item_id = $1 \
+    WHERE champion_id = $1 \
     RETURNING *',
     [
-      req.params.item_id, req.body.gender, req.body.birthdate, req.body.name, req.body.premium, req.body.agreed_to_terms, req.body.opt_in_to_marketing, req.body.profile_answer_1, req.body.profile_answer_2, req.body.profile_answer_3, req.body.profile_answer_4, req.body.profile_answer_5, req.body.profile_answer_6, req.body.profile_answer_7, req.body.profile_answer_8, req.body.profile_answer_9, req.body.profile_answer_10, req.body.profile_answer_11, req.body.profile_answer_12, moment()
+      req.params.champion_id, req.body.gender, req.body.birthdate, req.body.name, req.body.premium, req.body.agreed_to_terms, req.body.opt_in_to_marketing, req.body.profile_answer_1, req.body.profile_answer_2, req.body.profile_answer_3, req.body.profile_answer_4, req.body.profile_answer_5, req.body.profile_answer_6, req.body.profile_answer_7, req.body.profile_answer_8, req.body.profile_answer_9, req.body.profile_answer_10, req.body.profile_answer_11, req.body.profile_answer_12, moment()
     ]
   )
   .then(function (results) {
-    // Return 200 Status, Message & Resulting item as a JSON object.
+    // Return 200 Status, Message & Resulting champion as a JSON object.
     return res.status(200).json({
-      message: `API returned Updated Items with item_id of ${results.rows[0].item_id}.`,
+      message: `API returned Updated Champions with champion_id of ${results.rows[0].champion_id}.`,
       results: results.rows[0]
     });
   })
@@ -214,33 +213,33 @@ itemRouter.put('/:item_id', (async (req, res, next) => {
 }));
 
 // ======================================
-// Deletes individual Items.
-// ROUTE: DELETE `api/items/:item_id`
-itemRouter.delete('/:item_id', (async (req, res, next) => {
+// Deletes individual Champions.
+// ROUTE: DELETE `api/champions/:champion_id`
+championRouter.delete('/:champion_id', (async (req, res, next) => {
   // Return Status 400 & Message if 'params' do not contain the following:
-  if (!errorCatcher.paramsContains(req.params.item_id)) { return res.status(400).json({ message: "Params must contain item_id." }); };
+  if (!errorCatcher.paramsContains(req.params.champion_id)) { return res.status(400).json({ message: "Params must contain champion_id." }); };
 
   // PG database query.
   db.query(' \
-    DELETE FROM items \
-    WHERE item_id = $1',
+    DELETE FROM champions \
+    WHERE champion_id = $1',
     [
-      req.body.item_id
+      req.body.champion_id
     ]
   )
   .then(function (results) {
     // Return 200 Status & Message.
     return res.status(200).json({
-      message: `API Deleted Items with item_id of ${req.params.item_id}.`
+      message: `API Deleted Champions with champion_id of ${req.params.champion_id}.`
     });
   })
   .catch(function (err) {
     // Return 500 Status & Message.
     return res.status(500).json({
-      message: `API Deleted Items with item_id of ${req.params.item_id} has failed.`
+      message: `API Deleted Champions with champion_id of ${req.params.champion_id} has failed.`
     });
   });
 }));
 
 // ======================================
-module.exports = itemRouter;
+module.exports = championRouter;
