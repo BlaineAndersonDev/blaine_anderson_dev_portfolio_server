@@ -13,38 +13,42 @@ const db = require('../databaseConnection.js');
 // Get all Champions.
 // ROUTE: GET `api/champions/`
 championRouter.get('/', (async (req, res, next) => {
-  // PG database query.
+  // Begin Database Query:
   db.query('\
       SELECT * \
       FROM champions'
     )
     .then(function (results) {
-      // Return Status 500 & Message if 'champion' does not exist:
-      if (!errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Champions do not exist.` }); };
-
-      // Return 200 Status, Message & Resulting champion as a JSON object.
+      // Return Status 200, errorCode & errorMessage if no 'champions' exist in Database:
+      if (errorCatcher.isUndefinedNullEmpty(results.rows[0])) {
+        return res.status(200).json({
+          errorCode: `champion-0001e`,
+          errorMessage: `No Champions exist.`
+        });
+      };
+      // Return Status 200, message & resulting champions as a JSON object.
       return res.status(200).json({
         message: `API returned all Champions.`,
         results: results.rows
       });
     })
     .catch(function (err) {
-      // Return 500 Status & Message.
+      // Return Status 500, errorCode & errorMessage as a failsafe.
       return res.status(500).json({
-        // message: err.stack
-        message: 'There was an error. Please report this to the API Developer.'
+        errorCode: `0000e`,
+        errorMessage: `Unknown error.`,
+        errorStack: err.stack
       });
     });
 }));
 
 // ======================================
 // Get individual Champions.
-// ROUTE: GET `api/champions/`
+// ROUTE: GET `api/champions/:champion_id`
 championRouter.get('/:champion_id', (async (req, res, next) => {
-  // Return Status 400 & Message if 'params' do not contain the following:
-  if (!errorCatcher.paramsContains(req.params.champion_id)) { return res.status(400).json({ message: "Params must contain champion_id." }); };
-
-  // PG database query.
+  // Return Status 400, errorCode & errorMessage if 'params' do not contain the following:
+  if (!errorCatcher.containsRequiredParams(req.params.champion_id)) { return res.status(400).json({ errorCode: `champion-0003e`, errorMessage: `Params must contain a champion_id.` }); };
+  // Begin Database Query:
   await db.query('\
       SELECT * \
       FROM champions \
@@ -54,20 +58,25 @@ championRouter.get('/:champion_id', (async (req, res, next) => {
       ]
     )
   .then(function (results) {
-    // Return Status 500 & Message if 'champion' does not exist:
-    if (!errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Champions with provided champion_id: ${req.params.champion_id} does not exist.` }); };
-
+    // Return Status 200, errorCode & errorMessage if no specified 'champion' exists in Database:
+    if (errorCatcher.isUndefinedNullEmpty(results.rows[0])) {
+      return res.status(200).json({
+        errorCode: `champion-0002e`,
+        errorMessage: `No Champion with champion_id ${req.params.champion_id} exists.`
+      });
+    };
     // Return 200 Status, Message & Resulting champion as a JSON object.
     return res.status(200).json({
-      message: `API returned Champions with champion_id of ${req.params.champion_id}.`,
+      message: `API returned Champion with champion_id of ${req.params.champion_id}.`,
       results: results.rows
     });
   })
   .catch(function (err) {
     // Return 500 Status & Message.
     return res.status(500).json({
-      // message: err.stack
-      message: 'There was an error. Please report this to the API Developer.'
+      errorCode: `0000e`,
+      errorMessage: `Unknown error.`,
+      errorStack: err.stack
     });
   });
 }));
@@ -76,138 +85,79 @@ championRouter.get('/:champion_id', (async (req, res, next) => {
 // Create individual Champions.
 // ROUTE: POST `api/champions/`
 championRouter.post('/', (async(req, res, next) => {
-  // Return Status 400 & Message if 'body' does not contain the following:
-  // if (!errorCatcher.bodyContains(req.body.champion_id)) { return res.status(400).json({ message: "Body must contain champion_id." }); };
-  // if (!errorCatcher.bodyContains(req.body.gender)) { return res.status(400).json({ message: "Body must contain gender." }); };
-  // if (!errorCatcher.bodyContains(req.body.birthdate)) { return res.status(400).json({ message: "Body must contain birthdate." }); };
-  // if (!errorCatcher.bodyContains(req.body.name)) { return res.status(400).json({ message: "Body must contain name." }); };
-  // if (!errorCatcher.bodyContains(req.body.premium)) { return res.status(400).json({ message: "Body must contain premium." }); };
-  // if (!errorCatcher.bodyContains(req.body.agreed_to_terms)) { return res.status(400).json({ message: "Body must contain agreed_to_terms." }); };
-  // if (!errorCatcher.bodyContains(req.body.opt_in_to_marketing)) { return res.status(400).json({ message: "Body must contain opt_in_to_marketing." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_1)) { return res.status(400).json({ message: "Body must contain profile_answer_1." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_2)) { return res.status(400).json({ message: "Body must contain profile_answer_2." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_3)) { return res.status(400).json({ message: "Body must contain profile_answer_3." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_4)) { return res.status(400).json({ message: "Body must contain profile_answer_4." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_5)) { return res.status(400).json({ message: "Body must contain profile_answer_5." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_6)) { return res.status(400).json({ message: "Body must contain profile_answer_6." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_7)) { return res.status(400).json({ message: "Body must contain profile_answer_7." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_8)) { return res.status(400).json({ message: "Body must contain profile_answer_8." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_9)) { return res.status(400).json({ message: "Body must contain profile_answer_9." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_10)) { return res.status(400).json({ message: "Body must contain profile_answer_10." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_11)) { return res.status(400).json({ message: "Body must contain profile_answer_11." }); };
-  // if (!errorCatcher.bodyContains(req.body.profile_answer_12)) { return res.status(400).json({ message: "Body must contain profile_answer_12." }); };
-
-  // PG database query.
-  // await db.query('\
-  //     SELECT * \
-  //     FROM champions \
-  //     WHERE champions.champion_id = $1 ',
-  //     [
-  //       req.body.champion_id
-  //     ]
-  //   )
-  //   .then(async function (results) {
-  //     // Return Status 500 & Message if 'champion_id' already exists.
-  //     if (errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Champions with provided champion_id ${req.body.champion_id} already exists.` }); };
-
-      // PG database query.
-      await db.query(' \
-        INSERT INTO champions \
-        (name, image, category, value, created_date, modified_date) \
-        VALUES ($1, $2, $3, $4, $5, $6) \
-        RETURNING *',
-        [
-          req.body.name, req.body.image, req.body.category, req.body.value, moment(), moment()
-        ]
-      )
-      .then(function (results) {
-        // Return 200 Status, Message & Resulting champion as a JSON object.
-        return res.status(200).json({
-          message: `API returned newly created Champions with champion_id of ${results.rows[0].champion_id}.`,
-          results: results.rows[0]
-        });
-      })
-      .catch(function (err) {
-        // Return 500 Status & Message.
-        return res.status(500).json({
-          message: err.stack
-        });
-      });
-    // })
-    // .catch(function (err) {
-    //   // Return 500 Status & Message.
-    //   return res.status(500).json({
-    //     message: err.stack
-    //   });
-    // });
-}));
-
-// ======================================
-// Updates individual Champions.
-// ROUTE: PUT `api/champions/:champion_id`
-championRouter.put('/:champion_id', (async (req, res, next) => {
-  // Return Status 400 & Message if 'params' do not contain the following:
-  if (!errorCatcher.paramsContains(req.params.champion_id)) { return res.status(400).json({ message: "Params must contain champion_id." }); };
-  // Return Status 400 & Message if 'body' does not contain the following:
-  if (!errorCatcher.bodyContains(req.body.gender)) { return res.status(400).json({ message: "Body must contain gender." }); };
-  if (!errorCatcher.bodyContains(req.body.birthdate)) { return res.status(400).json({ message: "Body must contain birthdate." }); };
-  if (!errorCatcher.bodyContains(req.body.name)) { return res.status(400).json({ message: "Body must contain name." }); };
-  if (!errorCatcher.bodyContains(req.body.premium)) { return res.status(400).json({ message: "Body must contain premium." }); };
-  if (!errorCatcher.bodyContains(req.body.agreed_to_terms)) { return res.status(400).json({ message: "Body must contain agreed_to_terms." }); };
-  if (!errorCatcher.bodyContains(req.body.opt_in_to_marketing)) { return res.status(400).json({ message: "Body must contain opt_in_to_marketing." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_1)) { return res.status(400).json({ message: "Body must contain profile_answer_1." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_2)) { return res.status(400).json({ message: "Body must contain profile_answer_2." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_3)) { return res.status(400).json({ message: "Body must contain profile_answer_3." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_4)) { return res.status(400).json({ message: "Body must contain profile_answer_4." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_5)) { return res.status(400).json({ message: "Body must contain profile_answer_5." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_6)) { return res.status(400).json({ message: "Body must contain profile_answer_6." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_7)) { return res.status(400).json({ message: "Body must contain profile_answer_7." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_8)) { return res.status(400).json({ message: "Body must contain profile_answer_8." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_9)) { return res.status(400).json({ message: "Body must contain profile_answer_9." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_10)) { return res.status(400).json({ message: "Body must contain profile_answer_10." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_11)) { return res.status(400).json({ message: "Body must contain profile_answer_11." }); };
-  if (!errorCatcher.bodyContains(req.body.profile_answer_12)) { return res.status(400).json({ message: "Body must contain profile_answer_12." }); };
-
-  // PG database query.
-  db.query(' \
-    UPDATE champions \
-    SET \
-      gender = $2, \
-      birthdate = $3, \
-      name = $4, \
-      premium = $5, \
-      agreed_to_terms = $6, \
-      opt_in_to_marketing = $7, \
-      profile_answer_1 = $8, \
-      profile_answer_2 = $9, \
-      profile_answer_3 = $10, \
-      profile_answer_4 = $11, \
-      profile_answer_5 = $12, \
-      profile_answer_6 = $13, \
-      profile_answer_7 = $14, \
-      profile_answer_8 = $15, \
-      profile_answer_9 = $16, \
-      profile_answer_10 = $17, \
-      profile_answer_11 = $18, \
-      profile_answer_12 = $19, \
-      updated_at = $20 \
-    WHERE champion_id = $1 \
+  // Return Status 400, errorCode & errorMessage if 'body' does not contain the following:
+  if (errorCatcher.containsRequiredBody(req.body.name)) { return res.status(400).json({ errorCode: `champion-0005e`, errorMessage: `Request body must contain name.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.image)) { return res.status(400).json({ errorCode: `champion-0006e`, errorMessage: `Request body must contain image.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.class)) { return res.status(400).json({ errorCode: `champion-0007e`, errorMessage: `Request body must contain name.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.gold)) { return res.status(400).json({ errorCode: `champion-0008e`, errorMessage: `Request body must contain gold.` }); };
+  // Begin Database Query:
+  await db.query(' \
+    INSERT INTO champions \
+      (name, image, class, gold, created_at, updated_at) \
+    VALUES \
+      ($1, $2, $3, $4, $5, $6) \
     RETURNING *',
     [
-      req.params.champion_id, req.body.gender, req.body.birthdate, req.body.name, req.body.premium, req.body.agreed_to_terms, req.body.opt_in_to_marketing, req.body.profile_answer_1, req.body.profile_answer_2, req.body.profile_answer_3, req.body.profile_answer_4, req.body.profile_answer_5, req.body.profile_answer_6, req.body.profile_answer_7, req.body.profile_answer_8, req.body.profile_answer_9, req.body.profile_answer_10, req.body.profile_answer_11, req.body.profile_answer_12, moment()
+      req.body.name, req.body.image, req.body.class, req.body.gold, moment(), moment()
     ]
   )
   .then(function (results) {
     // Return 200 Status, Message & Resulting champion as a JSON object.
     return res.status(200).json({
-      message: `API returned Updated Champions with champion_id of ${results.rows[0].champion_id}.`,
+      message: `API created & returned Champion with champion_id of ${results.rows[0].champion_id}.`,
       results: results.rows[0]
     });
   })
   .catch(function (err) {
     // Return 500 Status & Message.
     return res.status(500).json({
-      message: err.stack
+      errorCode: `0000e`,
+      errorMessage: `Unknown error.`,
+      errorStack: err.stack
+    });
+  });
+}));
+
+// ======================================
+// Updates individual Champions.
+// ROUTE: PUT `api/champions/:champion_id`
+championRouter.put('/:champion_id', (async (req, res, next) => {
+  // Return Status 400, errorCode & errorMessage if 'params' do not contain the following:
+  if (!errorCatcher.containsRequiredParams(req.params.champion_id)) { return res.status(400).json({ errorCode: `champion-0003e`, errorMessage: `Params must contain a champion_id.` }); };
+  // Return Status 400, errorCode & errorMessage if 'body' does not contain the following:
+  if (errorCatcher.containsRequiredBody(req.body.name)) { return res.status(400).json({ errorCode: `champion-0005e`, errorMessage: `Request body must contain name.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.image)) { return res.status(400).json({ errorCode: `champion-0006e`, errorMessage: `Request body must contain image.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.class)) { return res.status(400).json({ errorCode: `champion-0007e`, errorMessage: `Request body must contain name.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.gold)) { return res.status(400).json({ errorCode: `champion-0008e`, errorMessage: `Request body must contain gold.` }); };
+
+  // Begin Database Query:
+  db.query(' \
+    UPDATE champions \
+    SET \
+      name = $2, \
+      image = $3, \
+      class = $4, \
+      gold = $5, \
+      updated_at = $6 \
+    WHERE champion_id = $1 \
+    RETURNING *',
+    [
+      req.params.champion_id, req.body.name, req.body.image, req.body.class, req.body.gold, moment()
+    ]
+  )
+  .then(function (results) {
+    // Return 200 Status, Message & Resulting champion as a JSON object.
+    return res.status(200).json({
+      message: `API updated & returned Champion with champion_id of ${results.rows[0].champion_id}.`,
+      results: results.rows[0]
+    });
+  })
+  .catch(function (err) {
+    // Return 500 Status & Message.
+    return res.status(500).json({
+      errorCode: `0000e`,
+      errorMessage: `Unknown error.`,
+      errorStack: err.stack
     });
   });
 }));
@@ -216,29 +166,54 @@ championRouter.put('/:champion_id', (async (req, res, next) => {
 // Deletes individual Champions.
 // ROUTE: DELETE `api/champions/:champion_id`
 championRouter.delete('/:champion_id', (async (req, res, next) => {
-  // Return Status 400 & Message if 'params' do not contain the following:
-  if (!errorCatcher.paramsContains(req.params.champion_id)) { return res.status(400).json({ message: "Params must contain champion_id." }); };
+  // Return Status 400, errorCode & errorMessage if 'params' do not contain the following:
+  if (errorCatcher.containsRequiredParams(req.params.champion_id)) { return res.status(400).json({ errorCode: `champion-0003e`, errorMessage: `Params must contain a champion_id.` }); };
 
-  // PG database query.
-  db.query(' \
-    DELETE FROM champions \
-    WHERE champion_id = $1',
-    [
-      req.body.champion_id
-    ]
-  )
-  .then(function (results) {
-    // Return 200 Status & Message.
-    return res.status(200).json({
-      message: `API Deleted Champions with champion_id of ${req.params.champion_id}.`
+  // Begin Database Query: (Check if champion exists)
+  await db.query('\
+      SELECT * \
+      FROM champions \
+      WHERE champions.champion_id = $1 ',
+      [
+        req.params.champion_id
+      ]
+    )
+    .then(async function (results) {
+      console.log(results.rows)
+      // Return Status 500 & Message if 'champion_id' does not exist.
+      if (errorCatcher.isUndefinedNullEmpty(results.rows[0])) {
+        return res.status(500).json({
+          message: `Champion with champion_id ${req.params.champion_id} does not exists.`
+        });
+      };
+
+      // Begin Database Query:
+      db.query(' \
+        DELETE FROM champions \
+        WHERE champion_id = $1',
+        [
+          req.params.champion_id
+        ]
+      )
+      .then(function (results) {
+        // Return 200 Status & Message.
+        return res.status(200).json({
+          message: `API deleted Champion with champion_id of ${req.params.champion_id}.`
+        });
+      })
+      .catch(function (err) {
+        // Return 500 Status & Message.
+        return res.status(500).json({
+          message: `API Deleted Champions with champion_id of ${req.params.champion_id} has failed.`
+        });
+      });
+    })
+    .catch(function (err) {
+      // Return 500 Status & Message.
+      return res.status(500).json({
+        message: err.stack
+      });
     });
-  })
-  .catch(function (err) {
-    // Return 500 Status & Message.
-    return res.status(500).json({
-      message: `API Deleted Champions with champion_id of ${req.params.champion_id} has failed.`
-    });
-  });
 }));
 
 // ======================================

@@ -13,7 +13,7 @@ const db = require('../databaseConnection.js');
 // Get all Items.
 // ROUTE: GET `api/items/`
 itemRouter.get('/', (async (req, res, next) => {
-  // PG database query.
+  // Begin Database Query:
   db.query('\
       SELECT * \
       FROM items'
@@ -21,7 +21,7 @@ itemRouter.get('/', (async (req, res, next) => {
     .then(function (results) {
       console.log(results.rows)
       // Return Status 500 & Message if 'item' does not exist:
-      if (!errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Items do not exist.` }); };
+      if (!errorCatcher.isUndefinedNullEmpty(results.rows[0])) { return res.status(500).json({ message: `Items do not exist.` }); };
 
       // Return 200 Status, Message & Resulting item as a JSON object.
       return res.status(200).json({
@@ -45,7 +45,7 @@ itemRouter.get('/:item_id', (async (req, res, next) => {
   // Return Status 400 & Message if 'params' do not contain the following:
   if (!errorCatcher.paramsContains(req.params.item_id)) { return res.status(400).json({ message: "Params must contain item_id." }); };
 
-  // PG database query.
+  // Begin Database Query:
   db.query('\
       SELECT * \
       FROM items \
@@ -98,7 +98,7 @@ itemRouter.post('/', (async(req, res, next) => {
   // if (!errorCatcher.bodyContains(req.body.profile_answer_11)) { return res.status(400).json({ message: "Body must contain profile_answer_11." }); };
   // if (!errorCatcher.bodyContains(req.body.profile_answer_12)) { return res.status(400).json({ message: "Body must contain profile_answer_12." }); };
 
-  // PG database query.
+  // Begin Database Query:
   // await db.query('\
   //     SELECT * \
   //     FROM items \
@@ -109,9 +109,9 @@ itemRouter.post('/', (async(req, res, next) => {
   //   )
   //   .then(async function (results) {
   //     // Return Status 500 & Message if 'item_id' already exists.
-  //     if (errorCatcher.undefinedNullEmptyCheck(results.rows[0])) { return res.status(500).json({ message: `Items with provided item_id ${req.body.item_id} already exists.` }); };
+  //     if (errorCatcher.isUndefinedNullEmpty(results.rows[0])) { return res.status(500).json({ message: `Items with provided item_id ${req.body.item_id} already exists.` }); };
 
-      // PG database query.
+      // Begin Database Query:
       await db.query(' \
         INSERT INTO items \
         (name, image, category, value, created_date, modified_date) \
@@ -169,7 +169,7 @@ itemRouter.put('/:item_id', (async (req, res, next) => {
   if (!errorCatcher.bodyContains(req.body.profile_answer_11)) { return res.status(400).json({ message: "Body must contain profile_answer_11." }); };
   if (!errorCatcher.bodyContains(req.body.profile_answer_12)) { return res.status(400).json({ message: "Body must contain profile_answer_12." }); };
 
-  // PG database query.
+  // Begin Database Query:
   db.query(' \
     UPDATE items \
     SET \
@@ -220,7 +220,7 @@ itemRouter.delete('/:item_id', (async (req, res, next) => {
   // Return Status 400 & Message if 'params' do not contain the following:
   if (!errorCatcher.paramsContains(req.params.item_id)) { return res.status(400).json({ message: "Params must contain item_id." }); };
 
-  // PG database query.
+  // Begin Database Query:
   db.query(' \
     DELETE FROM items \
     WHERE item_id = $1',

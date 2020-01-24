@@ -58,7 +58,7 @@ pool.on('connect', () => {
       champion_id                      BIGSERIAL NOT NULL PRIMARY KEY,
       name                    VARCHAR(128) NOT NULL,
       image                   VARCHAR(128) NOT NULL,
-      class                   VARCHAR(128) NOT NULL,
+      class              VARCHAR(128) NOT NULL,
       gold                    INT NOT NULL DEFAULT 0.0,
       created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()

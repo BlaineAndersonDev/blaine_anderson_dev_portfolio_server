@@ -1,10 +1,31 @@
-function undefinedNullEmptyCheck(results) {
+function isUndefinedNullEmpty(results) {
+  console.log(results)
   if (!results || results === undefined || results === null || results === '') {
-    return false
-  } else {
     return true
+  } else {
+    return false
   }
 };
+
+function containsRequiredBody(body) {
+  if (!body || body === undefined || body === null || body === '') {
+    return true // If body DOES exist, return true.
+  } else {
+    return false // If body DOES NOT exist, return false.
+  }
+};
+
+function containsRequiredParams(params) {
+  if (!params || params === undefined || params === null || params === '') {
+    return true // If params DO exist, return true.
+  } else {
+    return false // If params DO NOT exist, return false.
+  }
+};
+
+
+
+
 
 function bodyContains(body) {
   if (!body || body === undefined || body === null || body === '') {
@@ -30,4 +51,4 @@ function eventIntegerCheck(eventAnswer) {
   }
 };
 
-module.exports = {undefinedNullEmptyCheck, bodyContains, paramsContains, eventIntegerCheck};
+module.exports = {isUndefinedNullEmpty, containsRequiredBody, containsRequiredParams, bodyContains, paramsContains, eventIntegerCheck};
