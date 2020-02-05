@@ -1,5 +1,4 @@
 function isUndefinedNullEmpty(results) {
-  console.log(results)
   if (!results || results === undefined || results === null || results === '') {
     return true
   } else {

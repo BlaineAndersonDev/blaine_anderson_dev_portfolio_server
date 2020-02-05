@@ -47,7 +47,7 @@ championRouter.get('/', (async (req, res, next) => {
 // ROUTE: GET `api/champions/:champion_id`
 championRouter.get('/:champion_id', (async (req, res, next) => {
   // Return Status 400, errorCode & errorMessage if 'params' do not contain the following:
-  if (!errorCatcher.containsRequiredParams(req.params.champion_id)) { return res.status(400).json({ errorCode: `champion-0003e`, errorMessage: `Params must contain a champion_id.` }); };
+  if (errorCatcher.containsRequiredParams(req.params.champion_id)) { return res.status(400).json({ errorCode: `champion-0003e`, errorMessage: `Params must contain a champion_id.` }); };
   // Begin Database Query:
   await db.query('\
       SELECT * \
@@ -123,7 +123,7 @@ championRouter.post('/', (async(req, res, next) => {
 // ROUTE: PUT `api/champions/:champion_id`
 championRouter.put('/:champion_id', (async (req, res, next) => {
   // Return Status 400, errorCode & errorMessage if 'params' do not contain the following:
-  if (!errorCatcher.containsRequiredParams(req.params.champion_id)) { return res.status(400).json({ errorCode: `champion-0003e`, errorMessage: `Params must contain a champion_id.` }); };
+  if (errorCatcher.containsRequiredParams(req.params.champion_id)) { return res.status(400).json({ errorCode: `champion-0003e`, errorMessage: `Params must contain a champion_id.` }); };
   // Return Status 400, errorCode & errorMessage if 'body' does not contain the following:
   if (errorCatcher.containsRequiredBody(req.body.name)) { return res.status(400).json({ errorCode: `champion-0005e`, errorMessage: `Request body must contain name.` }); };
   if (errorCatcher.containsRequiredBody(req.body.image)) { return res.status(400).json({ errorCode: `champion-0006e`, errorMessage: `Request body must contain image.` }); };
@@ -204,14 +204,18 @@ championRouter.delete('/:champion_id', (async (req, res, next) => {
       .catch(function (err) {
         // Return 500 Status & Message.
         return res.status(500).json({
-          message: `API Deleted Champions with champion_id of ${req.params.champion_id} has failed.`
+          errorCode: `0000e`,
+          errorMessage: `Unknown error.`,
+          errorStack: err.stack
         });
       });
     })
     .catch(function (err) {
       // Return 500 Status & Message.
       return res.status(500).json({
-        message: err.stack
+        errorCode: `0000e`,
+        errorMessage: `Unknown error.`,
+        errorStack: err.stack
       });
     });
 }));
