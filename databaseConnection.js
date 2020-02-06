@@ -8,6 +8,7 @@ const pg = require('pg');
 const dotenv = require('dotenv');
 // Empty object to store our connection URL and use in our pool depending on ENV.
 let config;
+dotenv.config()
 
 // Check what our ENV is and setup appropriately.
 if (process.env.NODE_ENV === 'production') {
