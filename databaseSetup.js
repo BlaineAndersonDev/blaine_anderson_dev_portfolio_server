@@ -90,17 +90,17 @@ pool.on('connect', () => {
     INSERT INTO champions (
       name, image, class, gold
     ) VALUES (
-      'Shamino', 'http://u.cubeupload.com/WickedAmusingbus/Wayavatar.png', 'Ranger', 15.00
+      'Shamino', 'http://u.cubeupload.com/WickedAmusingbus/ShaminoU7.png', 'Ranger', 15.00
     );
     INSERT INTO champions (
       name, image, class, gold
     ) VALUES (
-      'Dupre', 'http://u.cubeupload.com/WickedAmusingbus/Wayavatar.png', 'Knight', 135.00
+      'Dupre', 'http://u.cubeupload.com/WickedAmusingbus/DupreU7.png', 'Knight', 135.00
     );
     INSERT INTO champions (
       name, image, class, gold
     ) VALUES (
-      'Iolo', 'http://u.cubeupload.com/WickedAmusingbus/Wayavatar.png', 'Bard', 67.00
+      'Iolo', 'http://u.cubeupload.com/WickedAmusingbus/IoloU7.png', 'Bard', 67.00
     );
     `);
     pool.query(queryText)

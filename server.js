@@ -20,7 +20,7 @@ const cors = require('cors')
 // Initialize the 'app' using 'express'.
 const app = express();
 // Use the provided PORT if it exists else default to PORT 5000.
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 // Prints the entire environment build in the console. Uncomment to display.
 // console.log(process.env);
 // Allows the app to parse 'application/json' request bodies.
