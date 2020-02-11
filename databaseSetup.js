@@ -46,20 +46,29 @@ pool.on('connect', () => {
     console.log('>>> Generating migrations...')
     const queryText = (`
     CREATE TABLE IF NOT EXISTS items (
-      item_id                      BIGSERIAL NOT NULL PRIMARY KEY,
+      item_id                 BIGSERIAL NOT NULL PRIMARY KEY,
       name                    VARCHAR(128) NOT NULL,
-      image                   VARCHAR(128) NOT NULL,
+      image            VARCHAR(128) NOT NULL,
       type                    VARCHAR(128) NOT NULL,
       value                   INT NOT NULL DEFAULT 0.0,
       created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
     CREATE TABLE IF NOT EXISTS champions (
-      champion_id                      BIGSERIAL NOT NULL PRIMARY KEY,
+      champion_id             BIGSERIAL NOT NULL PRIMARY KEY,
       name                    VARCHAR(128) NOT NULL,
-      image                   VARCHAR(128) NOT NULL,
-      class              VARCHAR(128) NOT NULL,
+      square_image            VARCHAR(128) NOT NULL,
+      splash_image            VARCHAR(128) NOT NULL,
+      class                   VARCHAR(128) NOT NULL,
       gold                    INT NOT NULL DEFAULT 0.0,
+      created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS champion_portraits (
+      champion_portrait_id    BIGSERIAL NOT NULL PRIMARY KEY,
+      name                    VARCHAR(128) NOT NULL,
+      square_url              VARCHAR(128) NOT NULL,
+      splash_url              VARCHAR(128) NOT NULL,
       created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
@@ -88,20 +97,96 @@ pool.on('connect', () => {
     );
 
     INSERT INTO champions (
-      name, image, class, gold
+      name, square_image, splash_image, class, gold
     ) VALUES (
-      'Shamino', 'http://u.cubeupload.com/WickedAmusingbus/ShaminoU7.png', 'Ranger', 15.00
+      'Akali', 'https://i.imgur.com/IuuX2cw.png', 'https://i.imgur.com/YKEqyYe.jpg', 'Assassin', 500.00
     );
     INSERT INTO champions (
-      name, image, class, gold
+      name, square_image, splash_image, class, gold
     ) VALUES (
-      'Dupre', 'http://u.cubeupload.com/WickedAmusingbus/DupreU7.png', 'Knight', 135.00
+      'Ahri', 'https://i.imgur.com/cvy0q9O.png', 'https://i.imgur.com/WvK8XeH.jpg', 'Mage', 500.00
     );
-    INSERT INTO champions (
-      name, image, class, gold
+
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
     ) VALUES (
-      'Iolo', 'http://u.cubeupload.com/WickedAmusingbus/IoloU7.png', 'Bard', 67.00
+      'Akali',
+      'https://i.imgur.com/IuuX2cw.png',
+      'https://i.imgur.com/YKEqyYe.jpg'
     );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Ahri',
+      'https://i.imgur.com/cvy0q9O.png',
+      'https://i.imgur.com/WvK8XeH.jpg'
+    );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Ashe',
+      'https://i.imgur.com/X5Rzr3Q.png',
+      'https://i.imgur.com/DIR8JZk.jpg'
+    );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Alistar',
+      'https://i.imgur.com/eKQLDGs.png',
+      'https://i.imgur.com/mDBZCAb.jpg'
+    );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Anivia',
+      'https://i.imgur.com/Kf902nP.png',
+      'https://i.imgur.com/pbJwjFI.jpg'
+    );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Aphelios',
+      'https://i.imgur.com/ikvALBU.png',
+      'https://i.imgur.com/PMtRrPt.jpg'
+    );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Azir',
+      'https://i.imgur.com/rdjUkMy.png',
+      'https://i.imgur.com/3NMdMXd.jpg'
+    );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Amumu',
+      'https://i.imgur.com/5dbXqhI.png',
+      'https://i.imgur.com/2HT4lmY.jpg'
+    );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Aurelion Sol',
+      'https://i.imgur.com/Il36n2h.png',
+      'https://i.imgur.com/ZkM9DBZ.jpg'
+    );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Annie',
+      'https://i.imgur.com/0ZstpA9.png',
+      'https://i.imgur.com/ck25DS8.jpg'
+    );
+    INSERT INTO champion_portraits (
+      name, square_url, splash_url
+    ) VALUES (
+      'Aatrox',
+      'https://i.imgur.com/BMHQllK.png',
+      'https://i.imgur.com/StxUkFS.jpg'
+    );
+
+
+
     `);
     pool.query(queryText)
       .then((res) => {
@@ -122,6 +207,7 @@ exports.destroy = () => {
   const queryText = (`
     DROP TABLE IF EXISTS items;
     DROP TABLE IF EXISTS champions;
+    DROP TABLE IF EXISTS champion_portraits;
   `);
   pool.query(queryText)
     .then((res) => {

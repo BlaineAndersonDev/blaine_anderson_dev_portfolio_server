@@ -14,6 +14,9 @@ const morgan = require('morgan')
 // Allows cross-origin resource sharing - https://www.npmjs.com/package/cors
 const cors = require('cors')
 
+const bodyParser = require('body-parser')
+const jsonParser = bodyParser.json();
+
 // =====================================
 // Initial Setup =======================
 // =====================================
@@ -23,6 +26,7 @@ const app = express();
 const port = process.env.PORT || 5001;
 // Prints the entire environment build in the console. Uncomment to display.
 // console.log(process.env);
+app.use(jsonParser); // use it globally
 // Allows the app to parse 'application/json' request bodies.
 app.use(express.json());
 // Allows the app to parse 'x-ww-form-urlencoded' request bodies.
@@ -50,6 +54,7 @@ const databaseConnection = require('./databaseConnection.js');
 // The app will use the required files below to generate API routes that allows the frontend to use HTTP calls (Axios) to retrieve data from the predetermined end points.
 app.use('/api/items', require('./controllers/itemsController.js'));
 app.use('/api/champions', require('./controllers/championsController.js'));
+app.use('/api/championportraits', require('./controllers/championPortraitsController.js'));
 // const itemsController = require('./controllers/itemsController.js');
 // app.use('/api/items', itemsController.itemRouter)
 

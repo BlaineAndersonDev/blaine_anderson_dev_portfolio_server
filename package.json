@@ -5,25 +5,23 @@
   "main": "server.js",
   "scripts": {
     "start": "NODE_ENV=production node server.js",
-
     "devstart": "NODE_ENV=development nodemon server.js",
     "devmigrate": "NODE_ENV=development node databaseSetup generate",
     "devseed": "NODE_ENV=development node databaseSetup seed",
     "devdestroy": "NODE_ENV=development node databaseSetup destroy",
     "devboot": "NODE_ENV=development node databaseSetup destroy && NODE_ENV=development node databaseSetup generate && NODE_ENV=development node databaseSetup seed && NODE_ENV=development nodemon server.js",
-
     "cloudstart": "pm2 kill && pm2 start npm -- start && pm2 monit",
     "cloudmigrate": "NODE_ENV=production node databaseSetup generate",
     "cloudseed": "NODE_ENV=production node databaseSetup seed",
     "clouddestroy": "NODE_ENV=production node databaseSetup destroy",
     "cloudboot": "pm2 kill && NODE_ENV=production node databaseSetup destroy && NODE_ENV=production node databaseSetup generate && NODE_ENV=production node databaseSetup seed && pm2 start npm -- start && pm2 monit",
-
     "mocha": "NODE_ENV=test mocha --exit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

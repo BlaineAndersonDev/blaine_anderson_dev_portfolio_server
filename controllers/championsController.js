@@ -87,18 +87,19 @@ championRouter.get('/:champion_id', (async (req, res, next) => {
 championRouter.post('/', (async(req, res, next) => {
   // Return Status 400, errorCode & errorMessage if 'body' does not contain the following:
   if (errorCatcher.containsRequiredBody(req.body.name)) { return res.status(400).json({ errorCode: `champion-0005e`, errorMessage: `Request body must contain name.` }); };
-  if (errorCatcher.containsRequiredBody(req.body.image)) { return res.status(400).json({ errorCode: `champion-0006e`, errorMessage: `Request body must contain image.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.square_image)) { return res.status(400).json({ errorCode: `champion-0006e`, errorMessage: `Request body must contain square_image.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.splash_image)) { return res.status(400).json({ errorCode: `champion-0006e`, errorMessage: `Request body must contain splash_image.` }); };
   if (errorCatcher.containsRequiredBody(req.body.class)) { return res.status(400).json({ errorCode: `champion-0007e`, errorMessage: `Request body must contain name.` }); };
   if (errorCatcher.containsRequiredBody(req.body.gold)) { return res.status(400).json({ errorCode: `champion-0008e`, errorMessage: `Request body must contain gold.` }); };
   // Begin Database Query:
   await db.query(' \
     INSERT INTO champions \
-      (name, image, class, gold, created_at, updated_at) \
+      (name, square_image, splash_image, class, gold, created_at, updated_at) \
     VALUES \
-      ($1, $2, $3, $4, $5, $6) \
+      ($1, $2, $3, $4, $5, $6, $7) \
     RETURNING *',
     [
-      req.body.name, req.body.image, req.body.class, req.body.gold, moment(), moment()
+      req.body.name, req.body.square_image, req.body.splash_image, req.body.class, req.body.gold, moment(), moment()
     ]
   )
   .then(function (results) {
@@ -126,7 +127,8 @@ championRouter.put('/:champion_id', (async (req, res, next) => {
   if (errorCatcher.containsRequiredParams(req.params.champion_id)) { return res.status(400).json({ errorCode: `champion-0003e`, errorMessage: `Params must contain a champion_id.` }); };
   // Return Status 400, errorCode & errorMessage if 'body' does not contain the following:
   if (errorCatcher.containsRequiredBody(req.body.name)) { return res.status(400).json({ errorCode: `champion-0005e`, errorMessage: `Request body must contain name.` }); };
-  if (errorCatcher.containsRequiredBody(req.body.image)) { return res.status(400).json({ errorCode: `champion-0006e`, errorMessage: `Request body must contain image.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.square_image)) { return res.status(400).json({ errorCode: `champion-0006e`, errorMessage: `Request body must contain square_image.` }); };
+  if (errorCatcher.containsRequiredBody(req.body.splash_image)) { return res.status(400).json({ errorCode: `champion-0006e`, errorMessage: `Request body must contain splash_image.` }); };
   if (errorCatcher.containsRequiredBody(req.body.class)) { return res.status(400).json({ errorCode: `champion-0007e`, errorMessage: `Request body must contain name.` }); };
   if (errorCatcher.containsRequiredBody(req.body.gold)) { return res.status(400).json({ errorCode: `champion-0008e`, errorMessage: `Request body must contain gold.` }); };
 
@@ -135,14 +137,15 @@ championRouter.put('/:champion_id', (async (req, res, next) => {
     UPDATE champions \
     SET \
       name = $2, \
-      image = $3, \
-      class = $4, \
-      gold = $5, \
-      updated_at = $6 \
+      square_image = $3, \
+      splash_image = $4, \
+      class = $5, \
+      gold = $6, \
+      updated_at = $7 \
     WHERE champion_id = $1 \
     RETURNING *',
     [
-      req.params.champion_id, req.body.name, req.body.image, req.body.class, req.body.gold, moment()
+      req.params.champion_id, req.body.name, req.body.square_image, req.body.splash_image, req.body.class, req.body.gold, moment()
     ]
   )
   .then(function (results) {
@@ -179,7 +182,6 @@ championRouter.delete('/:champion_id', (async (req, res, next) => {
       ]
     )
     .then(async function (results) {
-      console.log(results.rows)
       // Return Status 500 & Message if 'champion_id' does not exist.
       if (errorCatcher.isUndefinedNullEmpty(results.rows[0])) {
         return res.status(500).json({
